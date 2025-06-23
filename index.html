@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VANILLASCRIPT Inc. – Tokyo-based Game Studio</title>
+  <title>VANILLASCRIPT Inc. – Tokyo-based GAME Studio</title>
   <meta name="description" content="VANILLASCRIPT Inc. is a Tokyo-based game studio. Feel the hit, ride the rush, take the pain and indulge in the addictive thrill." />
   <link rel="icon" href="/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet" />
@@ -84,7 +84,7 @@
       <p>VANILLASCRIPT Inc.</p>
     </section>
     <section class="block" style="--i:4">
-      <p>Say hello</p>
+      <p>Say HELLO</p>
       <p><span id="email"></span></p>
       <div class="qr" id="qr-container"></div>
     </section>
@@ -93,11 +93,15 @@
       <p>SHINICHI KIKUCHI</p>
     </section>
     <section class="block" style="--i:6">
-      <p>Feel the hit. Ride the rush. Take the pain. Indulge in the addictive thrill.</p>
-      <p>存<span class="highlight">在</span>しないはずの Sense what リアルな感<span class="highlight">触</span> shouldn’t exist.&nbsp;<span id="scorePrefix">This?</span> <span id="score" style="display:none">0</span></p>
+      <p>Feel the hit. Ride the rush. Take the pain.</p>
+      <p>Indulge in the addictive thrill.</p>
+      <p>存<span class="highlight">在</span>しないはずの</p>
+      <p>Sense what shouldn’t exist.</p>
+      <p>リアルな感<span class="highlight">触</span></p>
+      <p><span id="scorePrefix">This is it.</span> <span id="score" style="display:none">0</span></p>
     </section>
     <section class="block" style="--i:7">
-      <p>https://vanillascript.co.jp/</p>
+      <p>https://vanillascript.co.jp</p>
       <p style="margin-bottom:42rem">Tokyo <span class="highlight">東</span>京-based GAME studio.</p>
     </section>
   </main>
@@ -122,7 +126,7 @@
       const GRAVITY=0.6,AIR_DRAG=0.98,X_DRAG=0.98,SLOW_FACTOR=0.1,DARK_TIME=1500,CLUSTER_CNT=3;
       const CLUSTER_SPEED=()=>Math.min(innerWidth,innerHeight)/4;
       function animateDarken(targets){const start=performance.now();let id;function frame(now){const p=Math.min((now-start)/DARK_TIME,1);const v=Math.round(204*(1-p));const col=`rgb(${v},${v},${v})`;targets.forEach(c=>{c.style.background=col;c.style.boxShadow='none'});if(p<1)id=requestAnimationFrame(frame);}id=requestAnimationFrame(frame);return()=>cancelAnimationFrame(id);}
-      function spawn(){score=0;updateScore();firstLaunch=false;document.getElementById('scorePrefix').textContent=' This?';const scoreEl=document.getElementById('score');if(scoreEl)scoreEl.style.display='none';cubes.forEach(c=>c.remove());cubes=[];pending=false;const centers=[...Array(CLUSTER_CNT)].map(_=>({x:Math.random()*innerWidth*0.8+innerWidth*0.1,y:Math.random()*innerHeight*0.6+innerHeight*0.2}));for(let i=0;i<numCubes();i++){const cls=randCls(),div=document.createElement('div');div.className=`cube ${cls} spawn`;let x,y;if(Math.random()<0.6){const c=centers[Math.floor(Math.random()*CLUSTER_CNT)],sp=CLUSTER_SPEED();x=Math.round(c.x+(Math.random()-0.5)*sp);y=Math.round(c.y+(Math.random()-0.5)*sp);}else{x=Math.round(Math.random()*innerWidth);y=Math.round(Math.random()*innerHeight*0.8);}div.style.left=`${x}px`;div.style.top=`${y}px`;Object.assign(div.dataset,{x,y,vx:0,vy:0,size:sizePx(cls),freeze:0});cubes.push(div);game.appendChild(div);requestAnimationFrame(()=>div.classList.add('show'));}fallStart=performance.now();}
+      function spawn(){score=0;updateScore();firstLaunch=false;document.getElementById('scorePrefix').textContent=' This is it.';const scoreEl=document.getElementById('score');if(scoreEl)scoreEl.style.display='none';cubes.forEach(c=>c.remove());cubes=[];pending=false;const centers=[...Array(CLUSTER_CNT)].map(_=>({x:Math.random()*innerWidth*0.8+innerWidth*0.1,y:Math.random()*innerHeight*0.6+innerHeight*0.2}));for(let i=0;i<numCubes();i++){const cls=randCls(),div=document.createElement('div');div.className=`cube ${cls} spawn`;let x,y;if(Math.random()<0.6){const c=centers[Math.floor(Math.random()*CLUSTER_CNT)],sp=CLUSTER_SPEED();x=Math.round(c.x+(Math.random()-0.5)*sp);y=Math.round(c.y+(Math.random()-0.5)*sp);}else{x=Math.round(Math.random()*innerWidth);y=Math.round(Math.random()*innerHeight*0.8);}div.style.left=`${x}px`;div.style.top=`${y}px`;Object.assign(div.dataset,{x,y,vx:0,vy:0,size:sizePx(cls),freeze:0});cubes.push(div);game.appendChild(div);requestAnimationFrame(()=>div.classList.add('show'));}fallStart=performance.now();}
       function explode(tX,tY){
         if(!firstLaunch) firstLaunch=true;
         let target=null, max=0, hit=[];
@@ -140,7 +144,7 @@
         });
         if(!target) return;
         if(firstLaunch){
-          document.getElementById('scorePrefix').textContent=' This //';
+          document.getElementById('scorePrefix').textContent=' This is it. //';
           const scoreEl=document.getElementById('score');
           if(scoreEl) scoreEl.style.display='inline';
         }
