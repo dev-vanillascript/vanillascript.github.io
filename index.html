@@ -16,13 +16,35 @@
       padding: 0;
       margin: -1px;
       overflow: hidden;
-      clip: rect(0, 0, 0, 0);
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
       white-space: nowrap;
       border: 0;
     }
     * { box-sizing:border-box; margin:0; padding:0; }
     body { font-family:'Noto Sans JP',Arial,sans-serif; background:#fff; color:#111; font-size:1rem; line-height:1.4; height:100vh; overflow:hidden; }
-    main { position:relative; z-index:10; max-width:50rem; margin:0 auto; padding:2rem; pointer-events:none; }
+    main {
+      position: relative;
+      z-index: 10;
+      max-width: 50rem;
+      margin: 0 auto;
+      padding: 2rem;
+      /* Allow main to handle pointer events for scrolling */
+      /* removed pointer-events:none */
+      max-height: 100vh;
+      overflow-y: auto;
+      /* Hide scrollbar */
+      scrollbar-width: none;        /* Firefox */
+      -ms-overflow-style: none;     /* IE 10+ */
+    }
+      /* Hide scrollbar */
+      scrollbar-width: none;        /* Firefox */
+      -ms-overflow-style: none;     /* IE 10+ */
+    }
+    /* Hide WebKit scrollbar */
+    main::-webkit-scrollbar {
+      display: none;
+    }
     main * { pointer-events:auto; }
     .block { margin-bottom:2rem; opacity:0; transform:translateY(24px); animation:fadeSlideIn .7s ease forwards; }
     .block:nth-child(n+1) { animation-delay:calc(.15s * var(--i)); }
@@ -48,7 +70,7 @@
   <div id="view"><div id="game"></div></div>
   <main>
     <h1 class="visually-hidden">VANILLASCRIPT Inc.</h1>
-    <address class="block" style="--i:1">
+    <address class="block" style="--i:1; margin-top:14rem;">
       <p>Shibuya <span class="highlight">渋</span>谷 Dogenzaka Tokyu Building 2F-C,</p>
       <p>1-10-8 Dogenzaka 道<span class="highlight">玄</span>坂,</p>
       <p>Shibuya, Tokyo, Japan</p>
@@ -67,15 +89,16 @@
       <div class="qr" id="qr-container"></div>
     </section>
     <section class="block" style="--i:5">
-      <p>CEO: SHINICHI KIKUCHI</p>
+      <p>CEO</p>
+      <p>SHINICHI KIKUCHI</p>
     </section>
     <section class="block" style="--i:6">
       <p>Feel the hit. Ride the rush. Take the pain. Indulge in the addictive thrill.</p>
-      <p>存<span class="highlight">在</span>しないはずの Sense what リアルな<span class="highlight">触</span>感 shouldn’t exist.&nbsp;<span id="scorePrefix">This?</span> <span id="score" style="display:none">0</span></p>
+      <p>存<span class="highlight">在</span>しないはずの Sense what リアルな感<span class="highlight">触</span> shouldn’t exist.&nbsp;<span id="scorePrefix">This?</span> <span id="score" style="display:none">0</span></p>
     </section>
     <section class="block" style="--i:7">
       <p>https://vanillascript.co.jp/</p>
-      <p>Tokyo <span class="highlight">東</span>京-based GAME studio.</p>
+      <p style="margin-bottom:42rem">Tokyo <span class="highlight">東</span>京-based GAME studio.</p>
     </section>
   </main>
 
@@ -86,9 +109,7 @@
       if (emailEl) emailEl.textContent = 'info@vanillascript.co.jp';
       const qrWrap = document.getElementById('qr-container');
       if (qrWrap && window.QRCode) qrWrap.appendChild(QRCode.generateSVG('mailto:info@vanillascript.co.jp',{modulesize:3,ecclevel:'M',margin:1}));
-    });
 
-    document.addEventListener('DOMContentLoaded', () => {
       const view = document.getElementById('view');
       const game = document.getElementById('game');
       let cubes = [], taps = [], pending=false, slow=false, fallStart=0, score=0, firstLaunch=false;
@@ -102,9 +123,54 @@
       const CLUSTER_SPEED=()=>Math.min(innerWidth,innerHeight)/4;
       function animateDarken(targets){const start=performance.now();let id;function frame(now){const p=Math.min((now-start)/DARK_TIME,1);const v=Math.round(204*(1-p));const col=`rgb(${v},${v},${v})`;targets.forEach(c=>{c.style.background=col;c.style.boxShadow='none'});if(p<1)id=requestAnimationFrame(frame);}id=requestAnimationFrame(frame);return()=>cancelAnimationFrame(id);}
       function spawn(){score=0;updateScore();firstLaunch=false;document.getElementById('scorePrefix').textContent=' This?';const scoreEl=document.getElementById('score');if(scoreEl)scoreEl.style.display='none';cubes.forEach(c=>c.remove());cubes=[];pending=false;const centers=[...Array(CLUSTER_CNT)].map(_=>({x:Math.random()*innerWidth*0.8+innerWidth*0.1,y:Math.random()*innerHeight*0.6+innerHeight*0.2}));for(let i=0;i<numCubes();i++){const cls=randCls(),div=document.createElement('div');div.className=`cube ${cls} spawn`;let x,y;if(Math.random()<0.6){const c=centers[Math.floor(Math.random()*CLUSTER_CNT)],sp=CLUSTER_SPEED();x=Math.round(c.x+(Math.random()-0.5)*sp);y=Math.round(c.y+(Math.random()-0.5)*sp);}else{x=Math.round(Math.random()*innerWidth);y=Math.round(Math.random()*innerHeight*0.8);}div.style.left=`${x}px`;div.style.top=`${y}px`;Object.assign(div.dataset,{x,y,vx:0,vy:0,size:sizePx(cls),freeze:0});cubes.push(div);game.appendChild(div);requestAnimationFrame(()=>div.classList.add('show'));}fallStart=performance.now();}
-      function explode(tX,tY){if(!firstLaunch)firstLaunch=true;let target=null,max=0,hit=[];cubes.forEach(c=>{const s=+c.dataset.size,cx=+c.dataset.x+s/2,cy=+c.dataset.y+s/2;const str=Math.max(240-Math.hypot(cx-tX,cy-tY),0);if(str>0){c.dataset.vy=-str*0.22-Math.random()*8;c.dataset.vx=(Math.random()-0.5)*12*(str/300);hit.push(c);if(str>max){max=str;target=c;}}});if(!target)return;if(firstLaunch){document.getElementById('scorePrefix').textContent=' This //';const scoreEl=document.getElementById('score');if(scoreEl)scoreEl.style.display='inline';}score+=hit.length;updateScore();hit.forEach(c=>c.dataset.freeze=1);slow=true;const stop=animateDarken(hit);setTimeout(()=>{stop();hit.forEach(c=>{c.dataset.freeze=0;c.style.background='#ccc';});slow=false;},DARK_TIME);const s=+target.dataset.size,cx=+target.dataset.x+s/2,cy=+target.dataset.y+s/2,SCL=2;const tx=Math.round(tX-SCL*cx),ty=Math.round(tY-SCL*cy);game.style.transform=`translate(${tx}px,${ty}px) scale(${SCL})`;setTimeout(()=>game.style.transform='none',DARK_TIME);}
+      function explode(tX,tY){
+        if(!firstLaunch) firstLaunch=true;
+        let target=null, max=0, hit=[];
+        cubes.forEach(c=>{
+          const s=+c.dataset.size;
+          const cx=+c.dataset.x+s/2;
+          const cy=+c.dataset.y+s/2;
+          const str=Math.max(240-Math.hypot(cx-tX,cy-tY),0);
+          if(str>0){
+            c.dataset.vy=-str*0.22-Math.random()*8;
+            c.dataset.vx=(Math.random()-0.5)*12*(str/300);
+            hit.push(c);
+            if(str>max){max=str;target=c;}
+          }
+        });
+        if(!target) return;
+        if(firstLaunch){
+          document.getElementById('scorePrefix').textContent=' This //';
+          const scoreEl=document.getElementById('score');
+          if(scoreEl) scoreEl.style.display='inline';
+        }
+        score+=hit.length;
+        updateScore();
+        hit.forEach(c=>c.dataset.freeze=1);
+        slow=true;
+        const stop=animateDarken(hit);
+        setTimeout(()=>{
+          stop();
+          hit.forEach(c=>{c.dataset.freeze=0;c.style.background='#ccc';});
+          slow=false;
+        }, DARK_TIME);
+        const s=+target.dataset.size;
+        const cx=+target.dataset.x+s/2;
+        const cy=+target.dataset.y+s/2;
+        const SCL=2;
+                game.style.transformOrigin = '0 0';
+        const tx = Math.round(tX - cx * SCL);
+        const ty = Math.round(tY - cy * SCL);
+        game.style.transform = `translate(${tx}px, ${ty}px) scale(${SCL})`;
+        setTimeout(() => {
+          game.style.transform = 'none';
+          game.style.transformOrigin = '0 0';
+        }, DARK_TIME);
+      }
       function step(){for(let i=cubes.length-1;i>=0;i--){const c=cubes[i];if(+c.dataset.freeze)continue;const sf=slow?SLOW_FACTOR:1,ff=easeFactor();let x=+c.dataset.x,y=+c.dataset.y,vx=+c.dataset.vx,vy=+c.dataset.vy;vx*=X_DRAG;vy+=GRAVITY*sf*ff;vy*=AIR_DRAG;x+=vx*sf;y+=vy*sf;Object.assign(c.dataset,{x,y,vx,vy});c.style.left=`${Math.round(x)}px`;c.style.top=`${Math.round(y)}px`;if(y>innerHeight){c.remove();cubes.splice(i,1);}}if(cubes.length===0&&!pending){pending=true;setTimeout(spawn,2500);}requestAnimationFrame(step);}
-      document.body.addEventListener('click',e=>{const x=e.clientX,y=e.clientY;if(nearTap(x,y))return;taps.push({x,y,time:Date.now()});const cd=document.createElement('div');cd.className='cooldown';cd.style.left=`${x}px`;cd.style.top=`${y}px`;document.body.appendChild(cd);setTimeout(()=>cd.remove(),2000);explode(x,y);});window.addEventListener('resize',()=>{clearTimeout(this._rz);this._rz=setTimeout(spawn,300);});const totalTime=(0.15*7+0.7)*1000;setTimeout(()=>{spawn();step();},totalTime);
+      document.body.addEventListener('click',e=>{const x=e.clientX,y=e.clientY;if(nearTap(x,y))return;taps.push({x,y,time:Date.now()});const cd=document.createElement('div');cd.className='cooldown';cd.style.left=`${x}px`;cd.style.top=`${y}px`;document.body.appendChild(cd);setTimeout(()=>cd.remove(),2000);explode(x,y);});
+      window.addEventListener('resize',()=>{clearTimeout(this._rz);this._rz=setTimeout(spawn,300);});
+      const totalTime=(0.15*7+0.7)*1000;setTimeout(()=>{spawn();step();},totalTime);
     });
   </script>
 </body>
