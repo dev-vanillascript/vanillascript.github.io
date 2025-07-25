@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VANILLASCRIPT Inc. – Tokyo-based GAME Studio</title>
   <meta name="description" content="VANILLASCRIPT Inc. is a Tokyo-based game studio. Feel the hit, ride the rush, take the pain and indulge in the addictive thrill." />
-  <link rel="icon" href="/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet" />
   <style>
     :root { --highlight-bg:#000; --highlight-fg:#fff; }
@@ -100,7 +99,6 @@
       <p style="margin-bottom:42rem">Tokyo <span class="highlight">東</span>京-based GAME studio.</p>
     </section>
   </main>
-
   <script src="https://cdn.jsdelivr.net/gh/englishextra/qrjs2@latest/js/qrjs2.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -108,7 +106,6 @@
       if (emailEl) emailEl.textContent = 'info@vanillascript.co.jp';
       const qrWrap = document.getElementById('qr-container');
       if (qrWrap && window.QRCode) qrWrap.appendChild(QRCode.generateSVG('mailto:info@vanillascript.co.jp',{modulesize:3,ecclevel:'M',margin:1}));
-
       const view = document.getElementById('view');
       const game = document.getElementById('game');
       let cubes = [], taps = [], pending=false, slow=false, fallStart=0, score=0, firstLaunch=false;
